@@ -1,6 +1,6 @@
 import { VFC } from 'react';
 import { LoginModal } from 'src/LoginModal';
-import { QuizList } from '../src/QuizList';
+import { QuizList } from 'src/QuizList';
 
 const Home: VFC = () => {
   return (
