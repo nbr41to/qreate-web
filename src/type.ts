@@ -12,6 +12,7 @@ export type Quiz = {
   id: string;
   userId: string; // created by
   type: QuizType;
+  tags?: string[]; // 未実装
   question: string;
   answer: string;
   selects: string[];
@@ -31,6 +32,7 @@ export type InputQuiz = {
 export type QuizGroup = {
   id: string;
   userId: string; // created by
+  tags?: string[]; // 未実装
   name: string;
   quizIds: string[];
   likedIds: string[];

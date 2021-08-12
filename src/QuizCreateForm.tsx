@@ -1,38 +1,113 @@
-import { VFC } from 'react';
-import { useForm } from 'react-hook-form';
+import { CirclePlusFill } from 'akar-icons';
+import { ChangeEvent, FormEvent, useState, VFC } from 'react';
+import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import { createQuiz } from './firebase/firestore';
-import { InputQuiz } from './type';
+import { InputQuiz, QuizType } from './type';
 
 export const QuizCreateForm: VFC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = async (data: InputQuiz) => {
-    console.log(data);
-    const input: InputQuiz = {
-      type: 'two',
-      question: 'What is the answer?',
-      answer: '黒ごま',
-      selects: ['黒ごま', '白ごま'],
-    };
-    console.log(input);
-    await createQuiz(input);
+  const initialState: InputQuiz = {
+    type: 'two',
+    question: '',
+    answer: '',
+    selects: [],
   };
+  const [inputForm, setInputForm] = useState(initialState);
 
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!inputForm.question || !inputForm.answer || !inputForm.selects.length)
+      return alert('入力してください');
+    setInputForm({
+      ...inputForm,
+      selects: [...inputForm.selects, inputForm.answer],
+    });
+    console.log({
+      ...inputForm,
+      selects: [...inputForm.selects, inputForm.answer],
+    });
+    await createQuiz({
+      ...inputForm,
+      selects: [...inputForm.selects, inputForm.answer],
+    });
+  };
   return (
-    <StyledQuizCreateForm onSubmit={handleSubmit(onSubmit)}>
-      <input {...register('example')} />
-      <input {...register('question')} />
-      <input {...register('answer')} />
-      <input {...register('select1')} />
-      <input {...register('select2')} />
-      {errors.exampleRequired && <span>This field is required</span>}
-      <input type="submit" />
+    <StyledQuizCreateForm onSubmit={onSubmit}>
+      <Form.Group controlId="type">
+        <Form.Label>問題の種類</Form.Label>
+        <Form.Select
+          onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+            setInputForm({ ...inputForm, type: e.target.value as QuizType })
+          }
+        >
+          <option value="two">○×クイズ</option>
+          <option value="nth">n個からひとつを選択</option>
+        </Form.Select>
+        <Form.Text className="text-muted">問題のタイプを選択します</Form.Text>
+      </Form.Group>
+      <Form.Group controlId="question">
+        <Form.Label>問題</Form.Label>
+        <Form.Control
+          as="textarea"
+          rows={4}
+          placeholder="パンはパンでも食べられないパンは？"
+          value={inputForm.question}
+          onChange={(e) =>
+            setInputForm({ ...inputForm, question: e.target.value })
+          }
+        />
+        <Form.Text className="text-muted">問題文を入力します</Form.Text>
+      </Form.Group>
+      <Form.Group controlId="answer">
+        <Form.Label>答え</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="フライパン"
+          value={inputForm.answer}
+          onChange={(e) =>
+            setInputForm({
+              ...inputForm,
+              answer: e.target.value,
+            })
+          }
+        />
+        <Form.Text className="text-muted">問題の答えを入力します</Form.Text>
+      </Form.Group>
+      <Form.Group controlId="selects">
+        <Form.Label>選択肢</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="フライパン"
+          value={inputForm.answer}
+          readOnly
+        />
+        {inputForm.selects.map((item, index) => (
+          <Form.Control
+            key={index}
+            type="text"
+            placeholder="コッペパン"
+            // value={inputForm.selects[index]}
+            onChange={(e) => {
+              inputForm.selects[index] = e.target.value;
+              setInputForm(inputForm);
+            }}
+          />
+        ))}
+        <CirclePlusFill
+          onClick={() =>
+            setInputForm({ ...inputForm, selects: [...inputForm.selects, ''] })
+          }
+        />
+        <Form.Text className="text-muted">問題の答えを入力します</Form.Text>
+      </Form.Group>
+
+      <Button variant="primary" type="submit">
+        Submit
+      </Button>
     </StyledQuizCreateForm>
   );
 };
 
-const StyledQuizCreateForm = styled.form``;
+const StyledQuizCreateForm = styled(Form)`
+  max-width: 600px;
+`;

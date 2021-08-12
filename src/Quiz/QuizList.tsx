@@ -1,7 +1,8 @@
 import { useEffect, useState, VFC } from 'react';
 import styled from 'styled-components';
-import { getQuizList } from './firebase/firestore';
-import { Quiz } from './type';
+import { getQuizList } from '../firebase/firestore';
+import { Quiz } from '../type';
+import { QuizItem } from './QuizItem';
 
 export const QuizList: VFC = () => {
   const [quizList, setQuizList] = useState<Quiz[]>([]);
@@ -16,10 +17,7 @@ export const QuizList: VFC = () => {
   return (
     <StyledQuizList>
       {quizList?.map((quiz) => (
-        <div key={quiz.id}>
-          {quiz.question}
-          <pre>{JSON.stringify(quiz, null, 2)}</pre>
-        </div>
+        <QuizItem key={quiz.id} quiz={quiz} />
       ))}
     </StyledQuizList>
   );

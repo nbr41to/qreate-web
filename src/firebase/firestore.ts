@@ -8,7 +8,7 @@ export const createQuiz = async (input: InputQuiz): Promise<void> => {
   try {
     if (!userId) throw new Error('User not logged in');
     const ref = db.collection('quiz_list').doc();
-    const now = dateFormat(new Date(), 'yyyy-mm-dd hh:MM:ss');
+    const now = dateFormat('YYYY/MM/DD hh:mm:ss');
     await ref.set({
       id: ref.id,
       userId,
@@ -32,5 +32,13 @@ export const getQuizList = async (): Promise<Quiz[]> => {
   } catch (error) {
     console.error(error);
     return [];
+  }
+};
+export const getQuiz = async (quizId: string): Promise<Quiz> => {
+  try {
+    const result = await db.collection('quiz_list').doc(quizId).get();
+    return result.data() as Quiz;
+  } catch (error) {
+    console.error(error);
   }
 };
