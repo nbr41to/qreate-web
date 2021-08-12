@@ -6,6 +6,7 @@ const userId = auth.currentUser?.uid;
 
 export const createQuiz = async (input: InputQuiz): Promise<void> => {
   try {
+    console.log(userId);
     if (!userId) throw new Error('User not logged in');
     const ref = db.collection('quiz_list').doc();
     const now = dateFormat('YYYY/MM/DD hh:mm:ss');

@@ -1,9 +1,13 @@
 import { VFC } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
-import { ChatBubble, Home, Info, Paper, Person } from 'akar-icons';
+import { ChatBubble, Door, Home, Info, Paper, Person } from 'akar-icons';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { modalState, userState } from '../recoil/atom';
 
 export const Header: VFC = () => {
+  const user = useRecoilValue(userState);
+  const setModal = useSetRecoilState(modalState);
   return (
     <StyledHeader>
       <div className="logo">Qreate web</div>
@@ -20,24 +24,33 @@ export const Header: VFC = () => {
             <span>ABOUT</span>
           </a>
         </Link>
-        <Link href="/mypage">
-          <a>
-            <Person size={36} />
-            <span>MYPAGE</span>
+        {user ? (
+          <>
+            <Link href="/mypage">
+              <a>
+                <Person size={36} />
+                <span>MYPAGE</span>
+              </a>
+            </Link>
+            <Link href="/create">
+              <a>
+                <Paper size={36} />
+                <span>Qreate</span>
+              </a>
+            </Link>
+            <Link href="/quizzes">
+              <a>
+                <ChatBubble size={36} />
+                <span>Quizzes</span>
+              </a>
+            </Link>
+          </>
+        ) : (
+          <a onClick={() => setModal({ type: 'login' })}>
+            <Door size={36} />
+            <span>Login</span>
           </a>
-        </Link>
-        <Link href="/create">
-          <a>
-            <Paper size={36} />
-            <span>Qreate</span>
-          </a>
-        </Link>
-        <Link href="/quizzes">
-          <a>
-            <ChatBubble size={36} />
-            <span>Quizzes</span>
-          </a>
-        </Link>
+        )}
       </nav>
     </StyledHeader>
   );
@@ -58,6 +71,7 @@ const StyledHeader = styled.div`
     align-items: center;
     > a {
       padding: 8px 16px;
+      color: #333;
       > svg {
         cursor: pointer;
       }

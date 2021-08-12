@@ -1,11 +1,10 @@
 import { useEffect, useState, VFC } from 'react';
-import { ListGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 import { getQuizList } from '../firebase/firestore';
 import { Quiz } from '../type';
-import { QuizListItem } from './QuizListItem';
+import { QuizCardItem } from './QuizCardItem';
 
-export const QuizList: VFC = () => {
+export const QuizCardList: VFC = () => {
   const [quizList, setQuizList] = useState<Quiz[]>([]);
   useEffect(() => {
     getQuizList()
@@ -16,12 +15,12 @@ export const QuizList: VFC = () => {
   }, []);
 
   return (
-    <StyledQuizList>
+    <StyledQuizCardList>
       {quizList?.map((quiz) => (
-        <QuizListItem key={quiz.id} quiz={quiz} />
+        <QuizCardItem key={quiz.id} quiz={quiz} />
       ))}
-    </StyledQuizList>
+    </StyledQuizCardList>
   );
 };
 
-const StyledQuizList = styled(ListGroup)``;
+const StyledQuizCardList = styled.div``;

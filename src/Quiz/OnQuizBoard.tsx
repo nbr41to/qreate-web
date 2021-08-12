@@ -1,18 +1,17 @@
-import { useRouter } from 'next/dist/client/router';
-import { VFC, useEffect } from 'react';
+import { VFC, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
-import { getQuiz } from 'src/firebase/firestore';
 import styled from 'styled-components';
-import { Quiz, QuizGroup } from '../type';
+import { Quiz } from '../type';
 
 type OnQuizBoardProps = {
   quiz: Quiz | null;
 };
 
 export const OnQuizBoard: VFC<OnQuizBoardProps> = ({ quiz }) => {
+  const [open, setOpen] = useState(false);
   const answer = (select: string) => {
     if (select === quiz.answer) {
-      alert('Correct!');
+      setOpen(true);
     } else {
       alert('Boom');
     }
@@ -20,7 +19,12 @@ export const OnQuizBoard: VFC<OnQuizBoardProps> = ({ quiz }) => {
   if (!quiz) return null;
   return (
     <StyledOnQuizBoard>
-      <Alert variant="success" closeLabel="閉じる" onClose={() => {}}>
+      <Alert
+        variant="success"
+        show={open}
+        dismissible
+        onClose={() => setOpen(false)}
+      >
         正解！
       </Alert>
       {'question' in quiz ? (

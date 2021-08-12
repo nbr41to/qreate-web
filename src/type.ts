@@ -57,3 +57,8 @@ export type AutoQuizGroup = {
   type: AutoQuizGroupType;
   quizzes: QuizPair[];
 };
+export type InputAutoQuizGroup = {
+  name: string;
+  type: AutoQuizGroupType;
+  quizzes: QuizPair[];
+};

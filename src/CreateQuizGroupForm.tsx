@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { createQuiz } from './firebase/firestore';
 import { InputQuiz, QuizType } from './type';
 
-export const QuizCreateForm: VFC = () => {
+export const CreateQuizGroupForm: VFC = () => {
   const initialState: InputQuiz = {
     type: 'two',
     question: '',
@@ -32,7 +32,7 @@ export const QuizCreateForm: VFC = () => {
     });
   };
   return (
-    <StyledQuizCreateForm onSubmit={onSubmit}>
+    <StyledCreateQuizGroupForm onSubmit={onSubmit}>
       <Form.Group controlId="type">
         <Form.Label>問題の種類</Form.Label>
         <Form.Select
@@ -104,10 +104,10 @@ export const QuizCreateForm: VFC = () => {
       <Button variant="primary" type="submit">
         Submit
       </Button>
-    </StyledQuizCreateForm>
+    </StyledCreateQuizGroupForm>
   );
 };
 
-const StyledQuizCreateForm = styled(Form)`
+const StyledCreateQuizGroupForm = styled(Form)`
   max-width: 600px;
 `;

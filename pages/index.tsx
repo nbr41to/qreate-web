@@ -1,6 +1,6 @@
 import { VFC } from 'react';
 import { LoginModal } from 'src/LoginModal';
-import { QuizList } from 'src/Quiz/QuizList';
+import { QuizCardList } from 'src/Quiz/QuizCardList';
 
 const Home: VFC = () => {
   return (
@@ -10,8 +10,7 @@ const Home: VFC = () => {
       <p>クイズ化は効率の良い学習方法のひとつです。</p>
       <h2>最近のクイズ一覧</h2>
       <div></div>
-      <LoginModal />
-      <QuizList />
+      <QuizCardList />
     </div>
   );
 };
