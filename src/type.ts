@@ -34,6 +34,7 @@ export type QuizGroup = {
   userId: string; // created by
   tags?: string[]; // 未実装
   name: string;
+  description?: string;
   quizIds: string[];
   likedIds: string[];
   favoriteIds: string[];
@@ -42,7 +43,11 @@ export type QuizGroup = {
 };
 export type InputQuizGroup = {
   name: string;
-  quizIds: string[];
+  description?: string;
+};
+export type InputAddQuizToGroup = {
+  quizId: string;
+  groupId: string;
 };
 
 /* 考案中 */

@@ -1,4 +1,3 @@
-/* FIX 壊れてました */
 export const dateFormat = (format: string, date?: Date): string => {
   if (!date) {
     date = new Date();

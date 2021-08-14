@@ -1,107 +1,46 @@
-import { CirclePlusFill } from 'akar-icons';
-import { ChangeEvent, FormEvent, useState, VFC } from 'react';
+import { useRouter } from 'next/router';
+import { FormEvent, useState, VFC } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
-import { createQuiz } from './firebase/firestore';
-import { InputQuiz, QuizType } from './type';
+import { createQuiz, createGroup } from './firebase/firestore';
 
 export const CreateQuizGroupForm: VFC = () => {
-  const initialState: InputQuiz = {
-    type: 'two',
-    question: '',
-    answer: '',
-    selects: [],
-  };
-  const [inputForm, setInputForm] = useState(initialState);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const router = useRouter();
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!inputForm.question || !inputForm.answer || !inputForm.selects.length)
-      return alert('入力してください');
-    setInputForm({
-      ...inputForm,
-      selects: [...inputForm.selects, inputForm.answer],
-    });
-    console.log({
-      ...inputForm,
-      selects: [...inputForm.selects, inputForm.answer],
-    });
-    await createQuiz({
-      ...inputForm,
-      selects: [...inputForm.selects, inputForm.answer],
-    });
+    if (!name) return;
+    try {
+      const createdGroupId = await createGroup({ name, description });
+      router.push(`/group/${createdGroupId}/edit`);
+    } catch (error) {
+      console.error(error);
+    }
   };
+
   return (
     <StyledCreateQuizGroupForm onSubmit={onSubmit}>
-      <Form.Group controlId="type">
-        <Form.Label>問題の種類</Form.Label>
-        <Form.Select
-          onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-            setInputForm({ ...inputForm, type: e.target.value as QuizType })
-          }
-        >
-          <option value="two">○×クイズ</option>
-          <option value="nth">n個からひとつを選択</option>
-        </Form.Select>
-        <Form.Text className="text-muted">問題のタイプを選択します</Form.Text>
+      <Form.Group controlId="name">
+        <Form.Label>セットの名前</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="動物クイズ"
+          onChange={(e) => setName(e.target.value)}
+        />
       </Form.Group>
-      <Form.Group controlId="question">
-        <Form.Label>問題</Form.Label>
+      <Form.Group controlId="description">
+        <Form.Label>セットの説明</Form.Label>
         <Form.Control
           as="textarea"
           rows={4}
-          placeholder="パンはパンでも食べられないパンは？"
-          value={inputForm.question}
-          onChange={(e) =>
-            setInputForm({ ...inputForm, question: e.target.value })
-          }
+          placeholder="動物の特徴に関する知識が深まるクイズ"
+          onChange={(e) => setDescription(e.target.value)}
         />
-        <Form.Text className="text-muted">問題文を入力します</Form.Text>
-      </Form.Group>
-      <Form.Group controlId="answer">
-        <Form.Label>答え</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="フライパン"
-          value={inputForm.answer}
-          onChange={(e) =>
-            setInputForm({
-              ...inputForm,
-              answer: e.target.value,
-            })
-          }
-        />
-        <Form.Text className="text-muted">問題の答えを入力します</Form.Text>
-      </Form.Group>
-      <Form.Group controlId="selects">
-        <Form.Label>選択肢</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="フライパン"
-          value={inputForm.answer}
-          readOnly
-        />
-        {inputForm.selects.map((item, index) => (
-          <Form.Control
-            key={index}
-            type="text"
-            placeholder="コッペパン"
-            // value={inputForm.selects[index]}
-            onChange={(e) => {
-              inputForm.selects[index] = e.target.value;
-              setInputForm(inputForm);
-            }}
-          />
-        ))}
-        <CirclePlusFill
-          onClick={() =>
-            setInputForm({ ...inputForm, selects: [...inputForm.selects, ''] })
-          }
-        />
-        <Form.Text className="text-muted">問題の答えを入力します</Form.Text>
       </Form.Group>
 
-      <Button variant="primary" type="submit">
+      <Button className="mt-3" variant="primary" type="submit">
         Submit
       </Button>
     </StyledCreateQuizGroupForm>

@@ -1,4 +1,4 @@
-import { VFC } from 'react';
+import { ReactNode, VFC } from 'react';
 import { Quiz } from 'src/type';
 import styled from 'styled-components';
 import { Badge, Button, ButtonGroup, Card } from 'react-bootstrap';

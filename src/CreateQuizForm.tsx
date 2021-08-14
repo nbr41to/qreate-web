@@ -2,10 +2,14 @@ import { Circle, CirclePlusFill, Cross } from 'akar-icons';
 import { ChangeEvent, FormEvent, useState, VFC } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
-import { createQuiz } from './firebase/firestore';
+import { addQuizToGroup, createQuiz } from './firebase/firestore';
 import { InputQuiz, QuizType } from './type';
 
-export const CreateQuizForm: VFC = () => {
+type CreateQuizFormProps = {
+  groupIn?: string;
+};
+
+export const CreateQuizForm: VFC<CreateQuizFormProps> = ({ groupIn }) => {
   const initialState: InputQuiz = {
     type: 'two',
     question: '',
@@ -18,16 +22,10 @@ export const CreateQuizForm: VFC = () => {
     e.preventDefault();
     if (!inputForm.question || !inputForm.answer)
       return alert('入力してください');
+
+    let createdQuizId: string;
     if (inputForm.type === 'two') {
-      // setInputForm({
-      //   ...inputForm,
-      //   selects: ['true', 'false'],
-      // });
-      console.log({
-        ...inputForm,
-        selects: ['true', 'false'],
-      });
-      await createQuiz({
+      createdQuizId = await createQuiz({
         ...inputForm,
         selects: ['true', 'false'],
       });
@@ -35,14 +33,13 @@ export const CreateQuizForm: VFC = () => {
     if (inputForm.type === 'nth') {
       if (inputForm.selects.length < 2)
         return alert('選択肢を2つ以上入力してください');
-      setInputForm({
+      createdQuizId = await createQuiz({
         ...inputForm,
         selects: [...inputForm.selects, inputForm.answer],
       });
-      await createQuiz({
-        ...inputForm,
-        selects: [...inputForm.selects, inputForm.answer],
-      });
+    }
+    if (groupIn) {
+      await addQuizToGroup({ quizId: createdQuizId, groupId: groupIn });
     }
   };
 
